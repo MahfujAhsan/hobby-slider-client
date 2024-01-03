@@ -4,14 +4,14 @@ import { toast } from "react-toastify";
 
 export default function Form() {
 
-    
+
     const handleSubmit = async (e) => {
         const form = e.target;
         const name = form.name.value;
         const url = form.url.value
 
         try {
-            const response = await fetch('http://localhost:5000/site-url', {
+            const response = await fetch('https://hobby-slider-server.vercel.app/site-url', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -20,7 +20,7 @@ export default function Form() {
             });
             const data = await response.json();
             console.log(data)
-            if(data.insertedId) {
+            if (data.insertedId) {
                 toast('You have added successfully!')
             }
 

@@ -34,7 +34,7 @@ export default function Slider() {
     };
 
     useEffect(() => {
-        fetch('http://localhost:5000/site-url')
+        fetch('https://hobby-slider-server.vercel.app/site-url')
             .then((data) => data.json())
             .then((siteData) => setSiteData(siteData))
     }, [])
@@ -71,7 +71,7 @@ export default function Slider() {
             </Swiper>
             <div className='rounded-b-lg bg-black w-[90%] mx-auto flex justify-end space-x-5 p-[9px]'>
                 <button onClick={() => document.getElementById('form-modal').showModal()} >
-                    <FaCirclePlus size={35} color='white'/>
+                    <FaCirclePlus size={35} color='white' />
                 </button>
                 <button>
                     <BsClockFill size={35} color='white' />
