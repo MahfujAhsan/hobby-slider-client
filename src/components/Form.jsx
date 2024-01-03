@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 
-export default function Form() {
+export default function Form({ onAddUrl }) {
     const [url, setUrl] = useState('');
     const [dataList, setDataList] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -15,21 +15,24 @@ export default function Form() {
         }
     }, []);
 
-    // console.log(dataList)
-
     const handleSubmit = () => {
         setLoading(true);
 
         try {
-            const newDataList = [...dataList, { url }];
+            const storedData = localStorage.getItem('WebURLs');
+            const existingData = storedData ? JSON.parse(storedData) : [];
+
+            const newDataList = [...existingData, { url }];
             setDataList(newDataList);
 
             // Save the updated data list to local storage
             localStorage.setItem('WebURLs', JSON.stringify(newDataList));
 
+            onAddUrl(url);
+
             // Reset the input field
             setUrl('');
-            if (dataList) {
+            if (dataList.length > 0) {
                 toast("You have saved your data!")
             }
 

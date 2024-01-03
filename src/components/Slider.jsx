@@ -20,12 +20,23 @@ export default function Slider() {
 
     useEffect(() => {
         const storedData = localStorage.getItem('WebURLs');
-        if (storedData) {
+        // if (storedData) {
+        //     setDataList(JSON.parse(storedData));
+        // }
+        if (!storedData) {
+            // Set initial data in local storage if it doesn't exist
+            const initialData = [
+                { url: 'https://bPlugins.com' },
+                { url: 'https://google.com' },
+                { url: 'https://gumroad.com' },
+            ];
+
+            localStorage.setItem('WebURLs', JSON.stringify(initialData));
+            setDataList(initialData);
+        } else {
             setDataList(JSON.parse(storedData));
         }
     }, []);
-
-    console.log(dataList)
 
     const closeModal = () => {
         setIsModalOpen(false);
@@ -36,6 +47,11 @@ export default function Slider() {
     const onAutoplayTimeLeft = (s, time, progress) => {
         progressCircle.current.style.setProperty('--progress', 1 - progress);
         progressContent.current.textContent = `${Math.ceil(time / 1000)}s`;
+    };
+
+    const handleAddUrl = (newUrl) => {
+        // Update the state with the new URL
+        setDataList([...dataList, { url: newUrl }]);
     };
 
     return (
@@ -56,7 +72,7 @@ export default function Slider() {
                 className="mySwiper"
             >
                 {
-                    dataList.map((info) => <SwiperSlide key={info.id}>
+                    dataList.map((info, i) => <SwiperSlide key={i}>
                         <iframe className='border-2 border-red-700 w-10/12 rounded-lg p-2' src={info.url} height={650} allowFullScreen></iframe>
                     </SwiperSlide>)
                 }
@@ -75,7 +91,7 @@ export default function Slider() {
                     <BsClockFill size={35} color='white' />
                 </button>
             </div>
-            <Form isOpen={isModalOpen} onClose={closeModal} />
+            <Form isOpen={isModalOpen} onClose={closeModal} onAddUrl={handleAddUrl} />
         </>
     )
 }
