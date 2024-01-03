@@ -15,12 +15,17 @@ import { BsClockFill } from "react-icons/bs";
 import Form from "./Form.jsx";
 
 export default function Slider() {
-    const [siteData, setSiteData] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [dataList, setDataList] = useState([]);
 
-    const openModal = () => {
-        setIsModalOpen(true);
-    };
+    useEffect(() => {
+        const storedData = localStorage.getItem('WebURLs');
+        if (storedData) {
+            setDataList(JSON.parse(storedData));
+        }
+    }, []);
+
+    console.log(dataList)
 
     const closeModal = () => {
         setIsModalOpen(false);
@@ -33,13 +38,6 @@ export default function Slider() {
         progressContent.current.textContent = `${Math.ceil(time / 1000)}s`;
     };
 
-    useEffect(() => {
-        fetch('https://hobby-slider-server.vercel.app/site-url')
-            .then((data) => data.json())
-            .then((siteData) => setSiteData(siteData))
-    }, [])
-
-    console.log(siteData)
     return (
         <>
             <Swiper
@@ -58,7 +56,7 @@ export default function Slider() {
                 className="mySwiper"
             >
                 {
-                    siteData.map((info) => <SwiperSlide key={info.id}>
+                    dataList.map((info) => <SwiperSlide key={info.id}>
                         <iframe className='border-2 border-red-700 w-10/12 rounded-lg p-2' src={info.url} height={650} allowFullScreen></iframe>
                     </SwiperSlide>)
                 }

@@ -1,48 +1,63 @@
-import { useState } from "react"
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 
 export default function Form() {
+    const [url, setUrl] = useState('');
+    const [dataList, setDataList] = useState([]);
+    const [loading, setLoading] = useState(false);
 
+    useEffect(() => {
+        // Load data from local storage when the component mounts
+        const storedData = localStorage.getItem('WebURLs');
+        if (storedData) {
+            setDataList(JSON.parse(storedData));
+        }
+    }, []);
 
-    const handleSubmit = async (e) => {
-        const form = e.target;
-        const name = form.name.value;
-        const url = form.url.value
+    // console.log(dataList)
+
+    const handleSubmit = () => {
+        setLoading(true);
 
         try {
-            const response = await fetch('https://hobby-slider-server.vercel.app/site-url', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ name, url }),
-            });
-            const data = await response.json();
-            console.log(data)
-            if (data.insertedId) {
-                toast('You have added successfully!')
+            const newDataList = [...dataList, { url }];
+            setDataList(newDataList);
+
+            // Save the updated data list to local storage
+            localStorage.setItem('WebURLs', JSON.stringify(newDataList));
+
+            // Reset the input field
+            setUrl('');
+            if (dataList) {
+                toast("You have saved your data!")
             }
 
         } catch (error) {
-            console.error('Error:', error.message);
+            console.error('Error submitting form:', error);
+        } finally {
+            setLoading(false);
         }
-    }
+    };
+
     return (
         <>
             <dialog id="form-modal" className="modal modal-bottom sm:modal-middle">
                 <div className="modal-box bg-sky-950 text-center">
                     <form onSubmit={handleSubmit} method="dialog">
-                        <label className="form-control w-10/12 mx-auto">
-                            <input required name="name" type="text" placeholder="App Name" className="input input-bordered w-full bg-white" />
-                        </label>
                         <label className="form-control w-10/12 mx-auto mt-6">
-                            <input required name="url" type="text" placeholder="URL" className="input input-bordered w-full bg-white" />
+                            <input
+                                required
+                                name="url"
+                                type="text"
+                                placeholder="URL"
+                                className="input input-bordered w-full bg-white"
+                                value={url}
+                                onChange={(e) => setUrl(e.target.value)}
+                            />
                         </label>
                         <div className="mt-8">
-
-                            {/* if there is a button in form, it will close the modal */}
-                            <button type="submit" className="btn w-10/12 mx-auto uppercase bg-lime-950 text-white font-3xl">Add</button>
+                            <button disabled={loading} type="submit" className={`btn w-10/12 mx-auto uppercase bg-lime-950 text-white font-3xl disabled:bg-gray-700`}>Add</button>
                         </div>
                     </form>
                 </div>
