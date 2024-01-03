@@ -58,11 +58,6 @@ export default function Slider() {
         setDataList([...dataList, { url: newUrl }]);
     };
 
-    // const handleDurationChange = (event) => {
-    //     const newDuration = parseInt(event.target.value, 10);
-    //     setSwiperDuration(newDuration);
-    // };
-
     const handleModalSave = (newDuration) => {
         setAutoplayDuration(newDuration);
 
@@ -103,7 +98,7 @@ export default function Slider() {
                 </div>
             </Swiper>
             <div className='rounded-b-lg bg-black w-[90%] mx-auto flex justify-end space-x-5 p-[9px]'>
-                <button onClick={() => document.getElementById('form-modal').showModal()} >
+                <button onClick={() => setIsModalOpen(true)}  >
                     <FaCirclePlus size={35} color='white' />
                 </button>
                 <button onClick={() => setIsModalDurationOpen(true)}>

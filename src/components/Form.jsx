@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 
-export default function Form({ onAddUrl }) {
+export default function Form({ onAddUrl, isOpen, onClose }) {
     const [url, setUrl] = useState('');
     const [dataList, setDataList] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -15,7 +15,8 @@ export default function Form({ onAddUrl }) {
         }
     }, []);
 
-    const handleSubmit = () => {
+    const handleSubmit = (e) => {
+        e.preventDefault();
         setLoading(true);
 
         try {
@@ -35,6 +36,7 @@ export default function Form({ onAddUrl }) {
             if (dataList.length > 0) {
                 toast("You have saved your data!")
             }
+            onClose();
 
         } catch (error) {
             console.error('Error submitting form:', error);
@@ -45,7 +47,7 @@ export default function Form({ onAddUrl }) {
 
     return (
         <>
-            <dialog id="form-modal" className="modal modal-bottom sm:modal-middle bg-sky-950/50">
+            <dialog open={isOpen} id="form-modal" className="modal modal-bottom sm:modal-middle bg-sky-950/50">
                 <div className="modal-box bg-sky-700 text-center">
                     <form onSubmit={handleSubmit} method="dialog">
                         <label className="form-control w-10/12 mx-auto mt-6">

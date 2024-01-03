@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 
 export default function Duration({ isOpen, onClose, onSave }) {
@@ -6,10 +7,10 @@ export default function Duration({ isOpen, onClose, onSave }) {
 
     const handleSave = (e) => {
         e.preventDefault();
-        console.log(newDuration)
         onSave(parseInt(newDuration, 10));
         setNewDuration('');
         onClose();
+        toast(`Duration set to ${newDuration}ms`);
     };
     return (
         <>
