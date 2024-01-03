@@ -13,10 +13,13 @@ import { FaCirclePlus } from "react-icons/fa6";
 import { BsClockFill } from "react-icons/bs";
 
 import Form from "./Form.jsx";
+import Duration from './Duration.jsx';
 
 export default function Slider() {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalDurationOpen, setIsModalDurationOpen] = useState(false);
     const [dataList, setDataList] = useState([]);
+    const [autoplayDuration, setAutoplayDuration] = useState(5000);
 
     useEffect(() => {
         const storedData = localStorage.getItem('WebURLs');
@@ -42,6 +45,7 @@ export default function Slider() {
         setIsModalOpen(false);
     };
 
+    const swiperRef = useRef(null);
     const progressCircle = useRef(null);
     const progressContent = useRef(null);
     const onAutoplayTimeLeft = (s, time, progress) => {
@@ -54,13 +58,28 @@ export default function Slider() {
         setDataList([...dataList, { url: newUrl }]);
     };
 
+    // const handleDurationChange = (event) => {
+    //     const newDuration = parseInt(event.target.value, 10);
+    //     setSwiperDuration(newDuration);
+    // };
+
+    const handleModalSave = (newDuration) => {
+        setAutoplayDuration(newDuration);
+
+        // Restart autoplay with the new duration
+        // if (swiperRef.current && swiperRef.current.swiper) {
+        //     swiperRef.current.swiper.autoplay.start();
+        // }
+    };
+
     return (
         <>
             <Swiper
+                ref={swiperRef}
                 spaceBetween={30}
                 centeredSlides={true}
                 autoplay={{
-                    delay: 5000,
+                    delay: autoplayDuration,
                     disableOnInteraction: false,
                 }}
                 pagination={{
@@ -87,11 +106,12 @@ export default function Slider() {
                 <button onClick={() => document.getElementById('form-modal').showModal()} >
                     <FaCirclePlus size={35} color='white' />
                 </button>
-                <button>
+                <button onClick={() => setIsModalDurationOpen(true)}>
                     <BsClockFill size={35} color='white' />
                 </button>
             </div>
             <Form isOpen={isModalOpen} onClose={closeModal} onAddUrl={handleAddUrl} />
+            <Duration isOpen={isModalDurationOpen} onClose={() => setIsModalDurationOpen(false)} onSave={handleModalSave} />
         </>
     )
 }

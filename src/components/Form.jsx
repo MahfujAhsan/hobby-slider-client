@@ -45,8 +45,8 @@ export default function Form({ onAddUrl }) {
 
     return (
         <>
-            <dialog id="form-modal" className="modal modal-bottom sm:modal-middle">
-                <div className="modal-box bg-sky-950 text-center">
+            <dialog id="form-modal" className="modal modal-bottom sm:modal-middle bg-sky-950/50">
+                <div className="modal-box bg-sky-700 text-center">
                     <form onSubmit={handleSubmit} method="dialog">
                         <label className="form-control w-10/12 mx-auto mt-6">
                             <input
