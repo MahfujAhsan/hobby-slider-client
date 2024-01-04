@@ -45,6 +45,22 @@ export default function Form({ onAddUrl, isOpen, onClose }) {
         }
     };
 
+    useEffect(() => {
+        const handleOverlayClick = (e) => {
+            if (e.target.id === 'form-modal') {
+                onClose();
+            }
+        };
+
+        if (isOpen) {
+            document.addEventListener('mousedown', handleOverlayClick);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleOverlayClick);
+        };
+    }, [isOpen, onClose]);
+
     return (
         <>
             <dialog open={isOpen} id="form-modal" className="modal modal-bottom sm:modal-middle bg-sky-950/50">

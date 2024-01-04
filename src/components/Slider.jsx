@@ -30,7 +30,7 @@ export default function Slider() {
             // Set initial data in local storage if it doesn't exist
             const initialData = [
                 { url: 'https://bPlugins.com' },
-                { url: 'https://google.com' },
+                { url: 'https://appdav.com/' },
                 { url: 'https://gumroad.com' },
             ];
 
@@ -87,7 +87,7 @@ export default function Slider() {
             >
                 {
                     dataList.map((info, i) => <SwiperSlide key={i}>
-                        <iframe className='border-2 border-red-700 w-10/12 rounded-lg p-2' src={info.url} height={650} allowFullScreen></iframe>
+                        <iframe className='border-2 border-white w-10/12 rounded-lg p-2' src={info.url} height={650} allowFullScreen></iframe>
                     </SwiperSlide>)
                 }
                 <div className="autoplay-progress" slot="container-end">
@@ -97,7 +97,7 @@ export default function Slider() {
                     <span ref={progressContent}></span>
                 </div>
             </Swiper>
-            <div className='rounded-b-lg bg-black w-[90%] mx-auto flex justify-end space-x-5 p-[9px]'>
+            <div className='rounded-b-lg bg-black w-[90%] mx-auto flex justify-end space-x-5 p-[9px] border-b-2 border-white'>
                 <button onClick={() => setIsModalOpen(true)}  >
                     <FaCirclePlus size={35} color='white' />
                 </button>

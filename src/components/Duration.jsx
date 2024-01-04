@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 
@@ -12,6 +12,23 @@ export default function Duration({ isOpen, onClose, onSave }) {
         onClose();
         toast(`Duration set to ${newDuration}ms`);
     };
+
+    useEffect(() => {
+        const handleOverlayClick = (e) => {
+            if (e.target.id === 'duration-modal') {
+                onClose();
+            }
+        };
+
+        if (isOpen) {
+            document.addEventListener('mousedown', handleOverlayClick);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleOverlayClick);
+        };
+    }, [isOpen, onClose]);
+    
     return (
         <>
             <dialog open={isOpen} id="duration-modal" className="modal modal-bottom sm:modal-middle bg-sky-950/50">
