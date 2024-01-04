@@ -97,7 +97,7 @@ export default function Slider() {
                     <span ref={progressContent}></span>
                 </div>
             </Swiper>
-            <div className='rounded-b-lg bg-black w-[90%] mx-auto flex justify-end space-x-5 p-[9px] border-b-2 border-white'>
+            <div className='rounded-b-lg bg-black w-[90%] mx-auto flex justify-between space-x-5 p-[9px] px-[120px]'>
                 <button onClick={() => setIsModalOpen(true)}  >
                     <FaCirclePlus size={35} color='white' />
                 </button>
