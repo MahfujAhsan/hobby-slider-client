@@ -45,6 +45,16 @@ export default function Form({ onAddUrl, isOpen, onClose }) {
         }
     };
 
+    const handleInputChange = (e) => {
+        let inputUrl = e.target.value;
+
+        if (!inputUrl.startsWith('http://') && !inputUrl.startsWith('https://')) {
+            inputUrl = 'https://' + inputUrl;
+        }
+        
+        setUrl(inputUrl);
+    };
+
     useEffect(() => {
         const handleOverlayClick = (e) => {
             if (e.target.id === 'form-modal') {
@@ -74,7 +84,7 @@ export default function Form({ onAddUrl, isOpen, onClose }) {
                                 placeholder="URL"
                                 className="input input-bordered w-full bg-white"
                                 value={url}
-                                onChange={(e) => setUrl(e.target.value)}
+                                onChange={handleInputChange}
                             />
                         </label>
                         <div className="mt-8">
