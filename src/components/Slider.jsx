@@ -1,18 +1,17 @@
 import { useRef, useState, useEffect } from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-
 // Import Swiper styles
+import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import './Slider.css';
-
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
-
+// react icons
 import { FaCirclePlus } from "react-icons/fa6";
 import { BsClockFill } from "react-icons/bs";
 import { MdRestartAlt } from "react-icons/md";
 
+// modals
 import Form from "./Form.jsx";
 import Duration from './Duration.jsx';
 
@@ -21,48 +20,49 @@ export default function Slider() {
     const [isModalDurationOpen, setIsModalDurationOpen] = useState(false);
     const [dataList, setDataList] = useState([]);
     const [autoplayDuration, setAutoplayDuration] = useState(5000);
-
-    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('https://bplugins.net/hayat/config.json');
-
+                setLoading(true);
+                const response = await fetch('https://hobby-slider-server.vercel.app/api/config');
+                
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
-
+                
                 const jsonData = await response.json();
-                setData(jsonData);
+
+                setLoading(false);
+
+                const initialData = jsonData.urls
+
+                // localStorage.setItem('WebURLs', JSON.stringify(initialData));
+
+                const storedData = localStorage.getItem('WebURLs');
+
+                // if (!storedData) {
+                //     setDataList(storedData);
+                // } else {
+                //     setDataList(JSON.parse(storedData));
+                // }
+                if (storedData) {
+                    // If there is stored data, use it
+                    setDataList(JSON.parse(storedData));
+                } else {
+                    // If no stored data, use the initial data from the API response
+                    setDataList(initialData);
+
+                    // Save the initial data to local storage
+                    localStorage.setItem('WebURLs', JSON.stringify(initialData));
+                }
             } catch (error) {
                 console.error('Error fetching data:', error.message);
             }
         };
 
         fetchData();
-    }, []);
-
-    console.log(data)
-
-    useEffect(() => {
-        const storedData = localStorage.getItem('WebURLs');
-        // if (storedData) {
-        //     setDataList(JSON.parse(storedData));
-        // }
-        if (!storedData) {
-            // Set initial data in local storage if it doesn't exist
-            const initialData = [
-                { url: 'https://bPlugins.com' },
-                { url: 'https://appdav.com/' },
-                { url: 'https://gumroad.com' },
-            ];
-
-            localStorage.setItem('WebURLs', JSON.stringify(initialData));
-            setDataList(initialData);
-        } else {
-            setDataList(JSON.parse(storedData));
-        }
     }, []);
 
     const closeModal = () => {
@@ -79,7 +79,26 @@ export default function Slider() {
 
     const handleAddUrl = (newUrl) => {
         // Update the state with the new URL
-        setDataList([...dataList, { url: newUrl }]);
+        // setDataList([...dataList, { url: newUrl }]);
+        const storedData = localStorage.getItem('WebURLs');
+
+        if (storedData) {
+            try {
+                // Parse the existing data
+                const existingData = JSON.parse(storedData);
+
+                // Update the state with the new URL
+                setDataList([...dataList, newUrl]);
+
+                // Update the existing data with the new URL
+                const updatedData = [...existingData, newUrl ];
+
+                // Save the updated data back to local storage
+                localStorage.setItem('WebURLs', JSON.stringify(updatedData));
+            } catch (error) {
+                console.error('Error parsing existing data:', error.message);
+            }
+        }
     };
 
     const handleModalSave = (newDuration) => {
@@ -106,7 +125,7 @@ export default function Slider() {
             >
                 {
                     dataList.map((info, i) => <SwiperSlide key={i}>
-                        <iframe className=' w-11/12 rounded-lg frame__border' src={info.url} allowFullScreen></iframe>
+                        <iframe sandbox="allow-same-origin allow-scripts allow-forms" className=' w-11/12 rounded-lg frame__border' src={info} allowFullScreen></iframe>
                     </SwiperSlide>)
                 }
                 <div className="autoplay-progress" slot="container-end">
@@ -121,9 +140,9 @@ export default function Slider() {
                     <h1 className='uppercase text-3xl'>Hobby Slider</h1>
                 </div>
                 <div className='flex space-x-8'>
-                    <button>
+                    {/* <button>
                         <MdRestartAlt size={35} color='black' />
-                    </button>
+                    </button> */}
                     <button onClick={() => setIsModalOpen(true)}  >
                         <FaCirclePlus size={35} color='black' />
                     </button>

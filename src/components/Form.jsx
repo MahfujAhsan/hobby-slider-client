@@ -23,11 +23,11 @@ export default function Form({ onAddUrl, isOpen, onClose }) {
             const storedData = localStorage.getItem('WebURLs');
             const existingData = storedData ? JSON.parse(storedData) : [];
 
-            const newDataList = [...existingData, { url }];
+            const newDataList = [...existingData, url];
             setDataList(newDataList);
 
             // Save the updated data list to local storage
-            localStorage.setItem('WebURLs', JSON.stringify(newDataList));
+            // localStorage.setItem('WebURLs', JSON.stringify(newDataList));
 
             onAddUrl(url);
 
