@@ -10,7 +10,6 @@ import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import { FaCirclePlus } from "react-icons/fa6";
 import { BsClockFill } from "react-icons/bs";
 import { MdRestartAlt } from "react-icons/md";
-
 // modals
 import Form from "./Form.jsx";
 import Duration from './Duration.jsx';
@@ -38,15 +37,8 @@ export default function Slider() {
 
                 const initialData = jsonData.urls
 
-                // localStorage.setItem('WebURLs', JSON.stringify(initialData));
-
                 const storedData = localStorage.getItem('WebURLs');
 
-                // if (!storedData) {
-                //     setDataList(storedData);
-                // } else {
-                //     setDataList(JSON.parse(storedData));
-                // }
                 if (storedData) {
                     // If there is stored data, use it
                     setDataList(JSON.parse(storedData));
@@ -57,6 +49,10 @@ export default function Slider() {
                     // Save the initial data to local storage
                     localStorage.setItem('WebURLs', JSON.stringify(initialData));
                 }
+
+                const apiAutoplayDuration = parseInt(jsonData.duration) || 5000; // Use a default value if duration is not available
+                setAutoplayDuration(apiAutoplayDuration);
+                localStorage.setItem('autoplayDuration', apiAutoplayDuration.toString());
             } catch (error) {
                 console.error('Error fetching data:', error.message);
             }
@@ -77,18 +73,17 @@ export default function Slider() {
         progressContent.current.textContent = `${Math.ceil(time / 1000)}s`;
     };
 
+    // console.log(dataList)
+
     const handleAddUrl = (newUrl) => {
-        // Update the state with the new URL
-        // setDataList([...dataList, { url: newUrl }]);
         const storedData = localStorage.getItem('WebURLs');
 
         if (storedData) {
             try {
                 // Parse the existing data
                 const existingData = JSON.parse(storedData);
-
-                // Update the state with the new URL
-                setDataList([...dataList, newUrl]);
+                
+                setDataList([...existingData, newUrl]);
 
                 // Update the existing data with the new URL
                 const updatedData = [...existingData, newUrl ];
@@ -103,6 +98,17 @@ export default function Slider() {
 
     const handleModalSave = (newDuration) => {
         setAutoplayDuration(newDuration);
+    };
+
+    // console.log(autoplayDuration)
+
+    const handleResetLocalStorage = () => {
+        // Clear local storage
+        localStorage.removeItem('WebURLs');
+        localStorage.removeItem('autoplayDuration');
+
+        // Reload the app
+        window.location.reload();
     };
 
     return (
@@ -124,8 +130,8 @@ export default function Slider() {
                 className="mySwiper"
             >
                 {
-                    dataList.map((info, i) => <SwiperSlide key={i}>
-                        <iframe sandbox="allow-same-origin allow-scripts allow-forms" className=' w-11/12 rounded-lg frame__border' src={info} allowFullScreen></iframe>
+                    dataList?.map((info, i) => <SwiperSlide key={i}>
+                        <iframe sandbox="allow-same-origin allow-scripts allow-forms" className='w-11/12 rounded-lg frame__border' src={info} allowFullScreen></iframe>
                     </SwiperSlide>)
                 }
                 <div className="autoplay-progress" slot="container-end">
@@ -140,9 +146,9 @@ export default function Slider() {
                     <h1 className='uppercase text-3xl'>Hobby Slider</h1>
                 </div>
                 <div className='flex space-x-8'>
-                    {/* <button>
-                        <MdRestartAlt size={35} color='black' />
-                    </button> */}
+                    <button>
+                        <MdRestartAlt onClick={handleResetLocalStorage} size={35} color='black' />
+                    </button>
                     <button onClick={() => setIsModalOpen(true)}  >
                         <FaCirclePlus size={35} color='black' />
                     </button>
