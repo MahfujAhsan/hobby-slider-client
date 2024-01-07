@@ -9,7 +9,7 @@ function App() {
   return (
     <>
       <Slider />
-      <ToastContainer />
+      <ToastContainer position="bottom-left"/>
     </>
   )
 }
