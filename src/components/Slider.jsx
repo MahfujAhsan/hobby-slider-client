@@ -10,11 +10,14 @@ import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import { FaCirclePlus } from "react-icons/fa6";
 import { BsClockFill } from "react-icons/bs";
 import { MdRestartAlt } from "react-icons/md";
+import { RiRestartFill } from "react-icons/ri";
+import { GiPreviousButton, GiNextButton } from "react-icons/gi";
 // modals
 import Form from "./Form.jsx";
 import Duration from './Duration.jsx';
 
 export default function Slider() {
+    const [swiper, setSwiper] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalDurationOpen, setIsModalDurationOpen] = useState(false);
     const [dataList, setDataList] = useState([]);
@@ -111,9 +114,22 @@ export default function Slider() {
         window.location.reload();
     };
 
+    const handleNext = () => {
+        if (swiper) {
+            swiper.slideNext();
+        }
+    };
+
+    const handlePrev = () => {
+        if (swiper) {
+            swiper.slidePrev();
+        }
+    };
+
     return (
-        <>
+        <div className='relative'>
             <Swiper
+                onSwiper={setSwiper}
                 ref={swiperRef}
                 spaceBetween={30}
                 centeredSlides={true}
@@ -121,17 +137,17 @@ export default function Slider() {
                     delay: autoplayDuration,
                     disableOnInteraction: false,
                 }}
-                pagination={{
-                    clickable: true,
-                }}
-                navigation={true}
+                // pagination={{
+                //     clickable: true,
+                // }}
+                // navigation={true}
                 modules={[Autoplay, Pagination, Navigation]}
                 onAutoplayTimeLeft={onAutoplayTimeLeft}
                 className="mySwiper"
             >
                 {
                     dataList?.map((info, i) => <SwiperSlide key={i}>
-                        <iframe sandbox="allow-same-origin allow-scripts allow-forms" className='w-11/12 rounded-lg frame__border' src={info} allowFullScreen></iframe>
+                        <iframe sandbox="allow-same-origin allow-scripts allow-forms" className='w-full frame__border' src={info} allowFullScreen></iframe>
                     </SwiperSlide>)
                 }
                 <div className="autoplay-progress" slot="container-end">
@@ -141,25 +157,30 @@ export default function Slider() {
                     <span ref={progressContent}></span>
                 </div>
             </Swiper>
-            <div className='rounded-b-lg bg-white border-2 border-black w-[92%] mx-auto flex justify-between items-center space-x-5 p-[9px] px-[20px] buttons__container'>
-                <div>
+            <div className='bg-transparent mx-auto flex justify-end items-center space-x-5 px-[20px] buttons__container'>
+                {/* <div>
                     <h1 className='uppercase text-3xl'>Hobby Slider</h1>
-                </div>
-                <div className='flex space-x-8'>
-                    <button>
-                        <MdRestartAlt onClick={handleResetLocalStorage} size={35} color='black' />
+                </div> */}
+                <div className='flex space-x-6'>
+                    <button className='cursor-pointer' onClick={handlePrev}>
+                        <GiPreviousButton size={22} color='black' />
                     </button>
-                    <button onClick={() => setIsModalOpen(true)}  >
-                        <FaCirclePlus size={35} color='black' />
+                    <button className='cursor-pointer' onClick={handleResetLocalStorage}>
+                        <RiRestartFill size={26} color='black' />
                     </button>
-                    <button onClick={() => setIsModalDurationOpen(true)}>
-                        <BsClockFill size={35} color='black' />
+                    <button className='cursor-pointer' onClick={() => setIsModalOpen(true)}  >
+                        <FaCirclePlus size={22} color='black' />
                     </button>
-
+                    <button className='cursor-pointer' onClick={() => setIsModalDurationOpen(true)}>
+                        <BsClockFill size={22} color='black' />
+                    </button>
+                    <button className='cursor-pointer' onClick={handleNext}>
+                        <GiNextButton size={22} color='black' />
+                    </button>
                 </div>
             </div>
             <Form isOpen={isModalOpen} onClose={closeModal} onAddUrl={handleAddUrl} />
             <Duration isOpen={isModalDurationOpen} onClose={() => setIsModalDurationOpen(false)} onSave={handleModalSave} />
-        </>
+        </div>
     )
 }
